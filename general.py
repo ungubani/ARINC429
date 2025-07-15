@@ -1,6 +1,19 @@
 from typing import List
 
 
+def adding_errors(code_word: List[int], errors: List[int]) -> List[int]:
+    if len(code_word) != len(errors):
+        raise ValueError("Длины кодового слова и вектора ошибок не равны")
+
+    channel_word = []
+    for i in range(len(code_word)):
+        channel_word.append(code_word[i] ^ errors[i])
+
+    return channel_word
+
+def error_vec_has_errors(errors: List[int]) -> True:
+    return sum(errors) != 0
+
 def degree_polynomial(polynomial: List[int]) -> int:
     degree = len(polynomial) - 1
 
@@ -8,7 +21,6 @@ def degree_polynomial(polynomial: List[int]) -> int:
         degree = degree - 1
 
     return degree
-
 
 def remainder_polynomials(divisible: List[int], divider: List[int]) -> List[int]:
     divisible_copy = divisible.copy()
@@ -43,7 +55,6 @@ def remainder_polynomials(divisible: List[int], divider: List[int]) -> List[int]
 
     return remainder
 
-
 def multiply_polynomials(multipliable: List[int], multiplier: List[int]) -> List[int]:
     result = [0 for _ in range(len(multipliable) + len(multiplier) - 1)]
 
@@ -74,34 +85,3 @@ def sum_polynomials(first: List[int], second: List[int]) -> List[int]:
     return result
 
 
-def encode(message: List[int], generating_polinomial: List[int]) -> List[int]:
-    gp_degree = degree_polynomial(generating_polinomial)
-
-    # Кривенькая реализация m(x) * x^r
-    shifted_message = [0 for _ in range(len(message) + gp_degree)]
-    for i in range(len(message)):
-        shifted_message[gp_degree + i] = message[i]
-
-    check_sum = remainder_polynomials(shifted_message, generating_polinomial)
-    code_word = sum_polynomials(shifted_message, check_sum)
-
-    return code_word
-
-
-def decoder(channel_word: List[int], generating_polinomial: List[int]) -> tuple[List[int], bool]:
-    syndrome = remainder_polynomials(channel_word, generating_polinomial)
-    # print(f"__syndrome__= {syndrome}")
-
-    decision = False
-    if sum(syndrome) != 0:
-        decision = True
-
-    decoded_message = []
-    for i in range(len(channel_word) - degree_polynomial(generating_polinomial)):
-        decoded_message.append(channel_word[i])
-
-    return decoded_message, decision
-
-
-if __name__ == "__main__":
-    pass
