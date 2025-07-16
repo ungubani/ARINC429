@@ -1,4 +1,4 @@
-from LR_1.coder import remainder_polynomials
+from general import remainder_polynomials
 
 import unittest
 
@@ -49,3 +49,4 @@ class TestCalculateRemainder(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    print(remainder_polynomials([1, 0, 0, 1, 0, 1, 1, 1, 1], [0, 1, 1]))

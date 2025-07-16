@@ -1,4 +1,4 @@
-from LR_1.coder import multiply_polynomials
+from general import multiply_polynomials
 
 import unittest
 from typing import List
