@@ -13,13 +13,20 @@ class Arinc429:
     def __init__(self):
         pass
 
-    def remainder_to_CRC(self, remainder: List[int]):
-        if len(remainder) > self._LENGTH_CRC: raise ValueError(f"В остатке больше, чем {self._LENGTH_CRC} битов!")
-        extended_remainder = general.extension_msb_zeros(remainder, length=self._LENGTH_CRC)
-        CRC = general.complement_bits(extended_remainder)
+    def check_CRC(self, message_bits: List[int]):
+        numerator = [0] * 16 + message_bits
+        for i in range(-1, -17, -1):
+            numerator[i] ^= 1
 
-        return CRC
+        remainder = general.remainder_polynomials(numerator, self._GENERATOR_POLYNOMIAL)
 
+        # Приводим остаток к 16 битам
+        while len(remainder) < self._LENGTH_CRC:
+            remainder.append(0)
+
+        has_error = not general.bits_is_equal(remainder, self._REMAINDER_IF_CORRECT)  # Если остатки не равны, то решение декодера будет E = 1
+
+        return has_error
 
     def encode(self, data_bits: List[int]):
         bits = data_bits.copy()
@@ -60,6 +67,13 @@ class Arinc429:
         data = message_bits[self._LENGTH_CRC::]
 
         return has_error, data
+
+    def remainder_to_CRC(self, remainder: List[int]):
+        if len(remainder) > self._LENGTH_CRC: raise ValueError(f"В остатке больше, чем {self._LENGTH_CRC} битов!")
+        extended_remainder = general.extension_msb_zeros(remainder, length=self._LENGTH_CRC)
+        CRC = general.complement_bits(extended_remainder)
+
+        return CRC
 
 
 if __name__ == "__main__":

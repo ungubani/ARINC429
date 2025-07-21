@@ -12,6 +12,11 @@ def adding_errors(code_word: List[int], errors: List[int]) -> List[int]:
     return channel_word
 
 def bits_is_equal(lhs_bits: List[int], rhs_bits: List[int]) -> bool:
+    """
+    Compare two bits sequence and return True if they are equal and else anywhere
+    :param lhs_bits: first bits sequence
+    :param rhs_bits: second bits sequence
+    """
     if len(lhs_bits) != len(rhs_bits): return False
 
     for i in range(len(lhs_bits)):
@@ -21,6 +26,11 @@ def bits_is_equal(lhs_bits: List[int], rhs_bits: List[int]) -> bool:
     return True
 
 def complement_bits(bits: List[int]) -> List[int]:
+    """
+    Inverting every bit in bits sequence. Safe for change
+    :param bits: bits sequence
+    :return: Complemented bits sequence
+    """
     bits_copy = bits.copy()
     for i in range(len(bits_copy)):
         bits_copy[i] ^= 1
@@ -74,7 +84,6 @@ def remainder_polynomials(divisible: List[int], divider: List[int]) -> List[int]
 
         return remainder
 
-
     for i in range(len(divider_copy) - 1, 0, -1):
         if divider_copy[i] != 0:
             divider_degree = i
@@ -82,20 +91,16 @@ def remainder_polynomials(divisible: List[int], divider: List[int]) -> List[int]
 
     for i in range(len(divisible_copy) - 1, divider_degree - 1, -1):
         if divisible_copy[i] != 0:
-            # print("Pered", divisible_copy, divider_copy)
             for j in range(divider_degree + 1):
                 divisible_copy[i - j] = divisible_copy[i - j] ^ divider_copy[divider_degree - j]
 
-            # print("Posle", divisible_copy, divider_copy)
     for i in range(len(divider) - 1):
         remainder.append(divisible_copy[i])
 
     return remainder
 
-
-
 def sum_polynomials(first: List[int], second: List[int]) -> List[int]:
-    # В этой функции нет проверки на "ведущие нули", так что ее можно легко использовать
+    # В этой функции нет проверки на "ведущие нули"
     result = [0 for _ in range(max(len(first), len(second)))]
 
     i = 0
@@ -111,5 +116,3 @@ def sum_polynomials(first: List[int], second: List[int]) -> List[int]:
         i = i + 1
 
     return result
-
-

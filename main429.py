@@ -4,10 +4,10 @@ import numpy as np
 import timeit
 
 
-def decode_sequency(bits_sequency: np.ndarray):
+def decode_sequency(bits_sequence: np.ndarray):
     arinc = Arinc429()
 
-    seq_len = len(bits_sequency)
+    seq_len = len(bits_sequence)
     start_pos = 0
     start_size = 8 * 3
 
@@ -15,7 +15,7 @@ def decode_sequency(bits_sequency: np.ndarray):
         end_pos = start_pos + start_size  # Будет указывать ЗА последний элемент диапазона
 
         while end_pos <= seq_len:
-            subseq = list(bits_sequency[start_pos:end_pos])
+            subseq = list(bits_sequence[start_pos:end_pos])
             subseq.reverse()
 
             has_errors, data = arinc.decode(subseq)
@@ -44,7 +44,7 @@ for j in range(1, _LENGTH_SEQ):
     if tab_remainder_CRC[j - 1] & _MASK_FIRST_BIT:
         tab_remainder_CRC[j] ^= _POLYNOMIAL
 
-def check_crc_polynum(bits: np.ndarray):
+def check_crc_polynum(bits: np.ndarray, tab_remainder_CRC):
     summa_0 = 0
     bits = np.append(bits, np.array([0] * 16))
     for j in range(0, 16):
@@ -57,16 +57,16 @@ def check_crc_polynum(bits: np.ndarray):
 
     return summa_0
 
-def decode_sequency_polynum(bits_sequency: np.ndarray):
+def decode_sequency_polynum(bits_sequence: np.ndarray):
     global tab_remainder_CRC
 
     start_pos = 0
 
-    while start_pos < len(bits_sequency):
+    while start_pos < len(bits_sequence):
         end_pos = start_pos + 8 * 3
 
-        while end_pos <= len(bits_sequency):
-            bits = bits_sequency[start_pos:end_pos]
+        while end_pos <= len(bits_sequence):
+            bits = bits_sequence[start_pos:end_pos]
             summa_0 = check_crc_polynum(bits)
 
             if summa_0 == _REMAINDER_IF_CORRECT:
@@ -80,12 +80,12 @@ def decode_sequency_polynum(bits_sequency: np.ndarray):
             start_pos += 8
 
 if __name__ == "__main__":
-    file = "mes_01.npy"
+    file = "recieved/mes_01.npy"
     # file = "mes_02.npy"
 
     data_array = np.load(file)
 
-    decode_sequency(data_array)
+    # decode_sequency(data_array)
 
     print(timeit.timeit("decode_sequency_polynum(data_array)", "from __main__ import decode_sequency_polynum, data_array", number=1000))
 
